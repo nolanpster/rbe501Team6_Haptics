@@ -3,7 +3,7 @@ rbe501Team6_Haptics
 This repository only contains our additions to existing work. To instal the required ros packages follow the process outlined below:
 
 
-# Install 
+# DVRK Install 
 * Download and instal cisst-saw from here: https://github.com/jhu-cisst/cisst/wiki/Compiling-cisst-and-SAW-with-CMake#13-building-using-catkin-build-tools-for-ros
 * Start from section 1.3 on that page. The code below should be the necessary steps to follow from the web-page cited above
 * instal "catkin-tools" if you don't have them yet
@@ -49,7 +49,7 @@ source devel/setup.bash
 # Launch Teleoperation Simulator
 roslaunch dvrk_teleop test_teleop.launch
 ```
-# Personalization
+# DVRK Personalization
 * Source the packages in the following order in your ~/.bashrc file
 ```sh
 source ~/cisst_ws/devel_release/setup.bash
