@@ -36,7 +36,7 @@ catkin build
 # set environment variables - MAKE SURE YOU SOURCE THE RIGHT FILE (debug vs. release)
 source devel_release/setup.bash
 ```
-* Now you can use the standard catkin_ws for the WPI-DVRK components (which use catkin_make)
+* Now you can use the standard catkin_ws (or any other name you want) for the WPI-DVRK components (which use catkin_make)
 ```sh
 cd ~/catkin_ws/src
 git clone https://github.com/WPI-AIM/dvrk-ros.git
@@ -49,7 +49,7 @@ source devel/setup.bash
 # Launch Teleoperation Simulator
 roslaunch dvrk_teleop test_teleop.launch
 ```
-# DVRK Personalization
+# DVRK 	Personalization
 * Source the packages in the following order in your ~/.bashrc file
 ```sh
 source ~/cisst_ws/devel_release/setup.bash
