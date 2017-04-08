@@ -66,7 +66,8 @@ catkin_make
 source devel/setup.bash
 ```
 * If you get a build error about _moveit_commander_ then you need to add that package
-``
+
+```sh
 sudo apt-get install ros-indigo-moveit
 cd ~/catkin_ws
 catkin_make
