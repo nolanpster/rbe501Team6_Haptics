@@ -55,3 +55,20 @@ roslaunch dvrk_teleop test_teleop.launch
 source ~/cisst_ws/devel_release/setup.bash
 source ~/catkin_ws/devel/setup.bash
 ```
+
+# WPI-DVRK-ROS (Haptics Packages)
+* to get the haptics package installed use this code:
+```sh
+cd ~/catkin_ws/src
+clone https://github.com/WPI-AIM/wpi-dvrk-ros
+cd ~/catkin_ws
+catkin_make
+source devel/setup.bash
+```
+* If you get a build error about _moveit_commander_ then you need to add that package
+``
+sudo apt-get install ros-indigo-moveit
+cd ~/catkin_ws
+catkin_make
+source devel/setup.bash
+```
