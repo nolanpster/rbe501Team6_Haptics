@@ -110,8 +110,8 @@ pretty(J_3);
 %%
 % Check cartesian position of MTM gripper
 qCurr = receive(jointQSub,10);
-T_linksCurrent = subs(T_links,qVec,qCurr.Position(1:7));
-plotarm(double(T_linksCurrent))
+T_linksCurrent = double(subs(T_links,qVec,qCurr.Position(1:7)));
+plotarm(T_linksCurrent)
 %% ONLY WORKS TILL HERE!
 %
 %% Problem 3
