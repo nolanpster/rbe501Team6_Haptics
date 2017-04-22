@@ -1,6 +1,7 @@
 
-% How steep the asym-vib is (can be between -1 and 1)
-delta = 1;
+% How steep the asym-vib is (can be between -1 and 1 - actually can be any
+% value, but it works best between -1 and 1)
+delta = -1;
 
 w1 = pi + (pi/2)*(delta);
 w2 = pi - (pi/2)*(delta);

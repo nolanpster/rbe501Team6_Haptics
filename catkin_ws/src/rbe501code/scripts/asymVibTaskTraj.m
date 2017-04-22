@@ -11,9 +11,10 @@ x1 = x<w1;
 x2 = x>=w1;
 phi = pi*(1-w1/w2); % phase offset (x*pi/w1 = w1*pi/w2 + phi, where x = w1)
 
-% Position oscilation components
-asym(x1) = -cos(x(x1)*pi/w1);
-asym(x2) = -cos(x(x2)*pi/w2 + phi);
+% Position oscilation components. I think we need the offset of +1 so that
+% position vibration starts at zero and not -1.
+asym(x1) = -cos(x(x1)*pi/w1)+1;
+asym(x2) = -cos(x(x2)*pi/w2 + phi)+1;
 
 % splitting this into x-y-z components
 mat_1 = kron(dirVec,ones(1,N));

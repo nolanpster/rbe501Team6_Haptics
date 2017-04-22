@@ -101,13 +101,15 @@ p6 = simplify(T_0_6(1:3,4));
 p7 = simplify(T_0_7(1:3,4));
 
 %%
-% I calculate the jacobian for the 3rd link
+% I calculate the linear jacobiian for the 3rd link
 J_3 = simplify(jacobian(p3,qVec(1:3)));
 
 fprintf('Jacobian of Position of Joint 4\n\r')
 pretty(J_3);
 %%
 % Check cartesian position of MTM gripper
+% Only use current 'q' values 1:7 because I think the 8th is the pincer
+% status
 qCurr = receive(jointQSub,10);
 T_linksCurrent = double(subs(T_links,qVec,qCurr.Position(1:7)));
 plotarm(T_linksCurrent)
@@ -116,141 +118,42 @@ plotarm(T_linksCurrent)
 % Create task space asymmetric oscilation offests
 % See example script configAsymWave.m and asymVibTaskTraj.m for more
 % details.
-t = -1:0.1:3;
 delta = 1;
+dt = 0.01;
 w1 = pi + (pi/2)*(delta);
 w2 = pi - (pi/2)*(delta);
-f =[1,0.3,.7]';
-t = -1:0.001:3;
+f =[1,1,0]';
+t = 0:dt:3;
 traj = asymVibTaskTraj(f,t,w1,w2);
-%% Helper Functions
-%%% _dh2mat_
-function T = dh2mat(theta,d,a,alpha)
-% Create a transformation matrix using DH parameters.
-% T = DH2MAT(THETA,D,A,ALPHA) creates a transformation matrix, using
-% the Denativ-Hartenberg convention, from frame n-1 to to frame n.
-% THETA is the joints axis of revolution, the z-axis in frame n-1. D 
-% is the transformation along the z-axis in frame n-1 and A is the
-% transformation along the current x-axis to align the the origin of
-% the current frame with frame n. ALPHA is the rotation about the
-% current x-axis to align the z-axis with the axis of rotation for
-% frame n.
-%
-% INPUT:
-%   THETA   - [nx1] joint positions & necessary offset about Z_n-1
-%              (radians)
-%   D       - [nx1] translations along Z_n-1
-%   A       - [nx1] translations along current X
-%   ALPHA   - [nx1] rotations about current X (radians)
-%
-% OUTPUT:
-%   T       - [4x4xn] matrix of intermediate transformations
-nTheta = numel(theta);
-nD = numel(d);
-nA = numel(a);
-nAlpha = numel(alpha);
-if any(diff([nTheta, nD, nA, nAlpha]))
-    msg = 'Input parameter lengths need to be equal';
-    error(msg)
-else
-    n = nTheta;
-end
 
-T = repmat(eye(4,4),1,1,n);
-% check for symbolic inputs
-symTh = isa(theta,'sym');
-symD = isa(d,'sym');
-symA = isa(a,'sym');
-symAl = isa(alpha,'sym');
-if any([symTh, symD,symA,symAl])
-    T = sym(T);
-end
-
-for i = 1:n
-    ct = cos(theta(i));
-    st = sin(theta(i));
-    RzTh = [ct, -st, 0, 0;...
-            st,  ct, 0, 0;...
-             0,   0, 1, 0;...
-             0,   0, 0, 1];
-    RzTh = simpX(RzTh);
-    TzD = eye(4);
-    if symD
-        TzD = sym(TzD);
-    end
-    TzD(3,4) = d(i);
-    TxA = eye(4);
-    if symA
-        TxA = sym(TxA);
-    end
-    TxA(1,4) = a(i);
-    ca = cos(alpha(i));
-    sa = sin(alpha(i));
-    RxAl = [1,  0,   0,   0;...
-            0, ca, -sa,   0;...
-            0, sa,  ca,   0;...
-            0,  0,   0,   1];
-    RxAl = simpX(RxAl);
-    T(:,:,i) = simpX(RzTh*TzD*TxA*RxAl);
-
-end 
-end
-%%% _simpX_
-function x = simpX(x)
-% called in the case of symbolic DH parameters
-    if isa(x,'sym')
-        x = simplify(x);
-    end
-end
-
-%%% _plotArm2D_
-function [figHand, linkFig, massFig] =...
-    plotArm2D(T_links,T_masses,titleAdd,figHand)
-%inputs - last 2 only, sorry
-% titleAdd - add this string to the figure title
-% figHand - plot arm on this figure if included
-numLink = size(T_links,3);
-numMass = size(T_masses,3);
-x=1;% reference indecies
-y=2;
-% Init space
-links = zeros(2,numLink);
-masses = links;
-% Calc x-y positions of links and masses w/ fwd kin.
-for i = 1:numLink
-    p_i = T_links(:,:,i)*[0 0 0 1]';
-    links(:,i) = p_i(1:2);
-end%for
-for i = 1:numMass
-    p_i = T_masses(:,:,i)*[0 0 0 1]';
-    masses(:,i) = p_i(1:2);
-end%for
-colorOrd = ['b','g','r','m']';
-massStyle = strcat(colorOrd,'.');
-
-if nargin == 4
-    figure(figHand)
-else
-    figHand = figure;
-end
-hold on
-for i = 1:numLink-1
-    linkFig = plot(links(x,i:i+1),links(y,i:i+1),colorOrd(i),...
-        'LineWidth',3);
-end
-for i = 1:numMass
-    massFig = plot(masses(x,i),masses(y,i),massStyle(i,:),...
-        'Markersize',28);
-end
-
-%axis([-.700,.700,-.700,.700]);
-if nargin >= 3
-    titleString = strcat(titleAdd,' Arm Pos (m)');
-else
-    titleString = 'Arm Pos (m)';
-end
-title(titleString)
-grid on
-hold off
-end
-
+%%
+% Need to calculate IK. We sould calculate IK to get position trajectory,
+% and compare with using integrated InvVelKin
+%%
+% Inverse Velocity Kinematics
+qCurr = receive(jointQSub,10);
+invJ_3curr = double(subs(invJ_3,qVec,qCurr.Position(1:7)));
+qVel = invJ_3curr*traj.vel;
+figure
+subplot(3,1,1)
+plot(t,qVel(1,:))
+ylabel('q1 vel')
+subplot(3,1,2)
+plot(t,qVel(2,:))
+ylabel('q2 vel')
+subplot(3,1,3)
+plot(t,qVel(3,:))
+ylabel('q3 vel')
+% "Integral" of joint velocity for joint positions
+qPos_offset = cumsum(qVel,2)*dt;
+qPos = qCurr.Position(1:3)+qPos_offset;
+figure
+subplot(3,1,1)
+plot(t,qPos(1,:))
+ylabel('q1 pos')
+subplot(3,1,2)
+plot(t,qPos(2,:))
+ylabel('q2 pos')
+subplot(3,1,3)
+plot(t,qPos(3,:))
+ylabel('q3 pos')
