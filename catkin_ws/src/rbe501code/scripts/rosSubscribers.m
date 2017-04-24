@@ -19,9 +19,9 @@ qCurr = receive(jointQSub,10)
 qVec = sym(zeros(7,1));
 thetaZ = sym(zeros(7,1));
 for i = 1:7
-    thetaZ(i) = sym(thetaZ(i)+['q'thetaZ,num2str(i)]);
+    thetaZ(i) = sym(thetaZ(i)+['q' thetaZ,num2str(i)]);
     qVec(i) = sym(['q',num2str(i)]);
-end thetaZ
+end 
 sym(pi);
 %%
 % Generate Cartesian Trajectory 
