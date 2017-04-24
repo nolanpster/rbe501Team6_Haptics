@@ -3,7 +3,7 @@
 <!-- Launch Actual MTMR launch file -->
   	<!--include file="$(find dvrk_robot)/launch/test_dvrk_mtm.launch" /-->
 <!-- Launch motion planning/kinematics nodes -->
-	<node name="teleop" pkg="dvrk_teleop" type="dvrk_teleop" />
+	<!--node name="teleop" pkg="dvrk_teleop" type="dvrk_teleop" /-->
 <!-- Launch PSM's logic handling code node -->
 	<!--node name="dvrk_psm_logic" pkg="dvrk_kinematics" type="dvrk_psm_logic" /-->
 <!-- Launch PSMs motion planning, collision detection and intelligence node -->
