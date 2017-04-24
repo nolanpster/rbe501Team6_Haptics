@@ -60,7 +60,7 @@ source ~/catkin_ws/devel/setup.bash
 * to get the haptics package installed use this code:
 ```sh
 cd ~/catkin_ws/src
-clone https://github.com/WPI-AIM/wpi-dvrk-ros
+git clone https://github.com/WPI-AIM/wpi-dvrk-ros
 cd ~/catkin_ws
 catkin_make
 source devel/setup.bash
