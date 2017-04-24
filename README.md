@@ -73,3 +73,23 @@ cd ~/catkin_ws
 catkin_make
 source devel/setup.bash
 ```
+
+# Haptics-Feedback Force Data
+* To obtain haptics force feedback data and see the visualization in your RVIZ simulator, follow these steps.
+* Modify your _teleop_haptics_half_ launch file as follows. You need to disable these lines (Lines 5-6) of code as they cause conflicts with the _joint_state_pubisher_ slider GUI.
+
+```
+<!-- Launch motion planning/kinematics nodes -->
+	<!--node name="teleop" pkg="dvrk_teleop" type="dvrk_teleop" /-->
+```
+* Run _teleop_haptics_half_ launch.
+* Using the _Scene Objects_ tab in the RVIZ simulator, upload your .STL file for any object that will be in the workspace.
+* Move and scale as desired, and then _Export As Text_ which will create a .scene file. It would help to store this file in a separate location. Clear the scene.
+* Import your object/setup using _Import From Text_.
+* Under the _Context Tab_, _Publish Current Scene_.
+* In a different terminal, run the desired ROS Topic, i.e.
+
+```
+rostopic echo /dvrk_psm/haptics_feedback_force
+```
+* To obtain a normalized set of force vectors and the visualization in the workspace. Note: If a spherical object is utilized as an obstacle, it can be seen that there are sudden jumps in force values, as the normal vector keeps changing radically because of how contact points are defined.
