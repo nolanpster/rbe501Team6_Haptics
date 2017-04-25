@@ -1,9 +1,9 @@
 %% MTM Kinematics
 %%
 % load DH params and subscribe to MTM positions
-load mtmDH
-rosSubscribers
 
+rosSubscribers
+load mtmDH
 qVec = sym(zeros(7,1));
 thetaZ = sym(thetaZ);
 for i = 1:7
@@ -63,7 +63,7 @@ T_0_5 = simplify(T(:,:,1)*T(:,:,2)*T(:,:,3)*T(:,:,4)*T(:,:,5));
 T_links(:,:,5) = T_0_5; %store for later.
 fprintf('Composite Transformation from frame 0 to 5 :\n')
 disp(T_0_5);
-%%
+%%ReadAllBoards: handle for port 0 is NULL
 T_0_6 = simplify(T(:,:,1)*T(:,:,2)*T(:,:,3)*T(:,:,4)*T(:,:,5)*T(:,:,6));
 T_links(:,:,6) = T_0_6; %store for later.
 fprintf('Composite Transformation from frame 0 to 6 :\n')
