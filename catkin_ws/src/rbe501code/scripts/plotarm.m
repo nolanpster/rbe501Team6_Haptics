@@ -28,7 +28,7 @@ plot3([0 Ox],[0 Oy],[0 Oz],'m.','MarkerSize',20);
 xlabel('X [mm]')
 ylabel('Y [mm]')
 zlabel('Z [mm]')
-axis([-.4 .4 -.6 .3 -.5 0])
+axis equal
 plotCS(T_comp(:,:,N),fig,0.05);
 grid on
 legend('Link','Base','Coord. Sys Origin','Tool X-Axis',...

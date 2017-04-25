@@ -106,6 +106,7 @@ J_3 = simplify(jacobian(p3,qVec(1:3)));
 
 fprintf('Jacobian of Position of Joint 4\n\r')
 pretty(J_3);
+invJ_3 = inv(J_3);
 %%
 % Check cartesian position of MTM gripper
 % Only use current 'q' values 1:7 because I think the 8th is the pincer
@@ -131,12 +132,14 @@ traj = asymVibTaskTraj(f,t,w1,w2);
 % and compare with using integrated InvVelKin
 %%
 % Inverse Velocity Kinematics
+load('joint3Jac.mat')
 qCurr = receive(jointQSub,10);
 invJ_3curr = double(subs(invJ_3,qVec,qCurr.Position(1:7)));
 qVel = invJ_3curr*traj.vel;
 figure
 subplot(3,1,1)
 plot(t,qVel(1,:))
+title 'Necessary Joint Velocities'
 ylabel('q1 vel')
 subplot(3,1,2)
 plot(t,qVel(2,:))
@@ -150,6 +153,7 @@ qPos = qCurr.Position(1:3)+qPos_offset;
 figure
 subplot(3,1,1)
 plot(t,qPos(1,:))
+title 'Necessary Joint Position Trajectories'
 ylabel('q1 pos')
 subplot(3,1,2)
 plot(t,qPos(2,:))
